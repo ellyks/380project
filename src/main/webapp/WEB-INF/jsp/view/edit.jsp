@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Customer Support</title>
+        <title>Online Bidding</title>
     </head>
     <body>
         <c:url var="logoutUrl" value="/logout"/>
@@ -12,10 +12,15 @@
 
         <h2>Ticket #${ticketId}</h2>
         <form:form method="POST" enctype="multipart/form-data" modelAttribute="ticketForm">
-            <form:label path="subject">Subject</form:label><br/>
+
+            
+            <form:label path="subject">Item Name</form:label><br/>
             <form:input type="text" path="subject" /><br/><br/>
-            <form:label path="body">Body</form:label><br/>
+            <form:label path="body">Description</form:label><br/>
             <form:textarea path="body" rows="5" cols="30" /><br/><br/>
+            <form:label path="price">Price</form:label><br/>
+            <form:input type="text" path="Price" /><br/><br/>
+            
             <c:if test="${ticket.numberOfAttachments > 0}">
                 <b>Attachments:</b><br/>
                 <ul>

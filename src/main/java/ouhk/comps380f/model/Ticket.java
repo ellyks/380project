@@ -6,10 +6,12 @@ import java.util.Map;
 
 public class Ticket {
 
+    private long price;
+
     private long id;
     private String customerName;
-    private String subject;
-    private String body;
+    private String subject; // as item name
+    private String body;// as item description
     private Map<String, Attachment> attachments = new Hashtable<>();
 
     public long getId() {
@@ -42,6 +44,14 @@ public class Ticket {
 
     public void setBody(String body) {
         this.body = body;
+    }
+    
+        public long getPrice() {
+        return price;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
     }
 
     public Attachment getAttachment(String name) {

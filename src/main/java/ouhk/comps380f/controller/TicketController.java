@@ -39,9 +39,18 @@ public class TicketController {
 
     public static class Form {
 
+        private long price;
         private String subject;
         private String body;
         private List<MultipartFile> attachments;
+
+        public long getPrice() {
+            return price;
+        }
+
+        public void setPrice(long price) {
+            this.price = price;
+        }
 
         public String getSubject() {
             return subject;
@@ -76,6 +85,8 @@ public class TicketController {
         ticket.setCustomerName(principal.getName());
         ticket.setSubject(form.getSubject());
         ticket.setBody(form.getBody());
+        
+        ticket.setPrice(form.getPrice());
 
         for (MultipartFile filePart : form.getAttachments()) {
             Attachment attachment = new Attachment();
