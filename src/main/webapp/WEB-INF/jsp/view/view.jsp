@@ -21,7 +21,7 @@
 
         Description: <c:out value="${ticket.body}" /><br /><br />
 
-        Price: $<c:out value="${ticket.price}" /><br /><br />
+        Expected Price: $<c:out value="${ticket.price}" /><br /><br />
 
         <c:if test="${ticket.numberOfAttachments > 0}">
             Attachments:
