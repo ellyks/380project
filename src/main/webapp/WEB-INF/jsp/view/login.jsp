@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Customer Support Login</title>
+        <title>Online Bidding Login</title>
     </head>
     <body>
         <c:if test="${param.error != null}">
@@ -10,7 +10,7 @@
         <c:if test="${param.logout != null}">
             <p>You have logged out.</p>
         </c:if>
-        <h2>Customer Support Login</h2>
+        <h2>Online Bidding Login</h2>
         <form action="login" method="POST">
             <label for="username">Username:</label><br/>
             <input type="text" id="username" name="username" /><br/><br/>

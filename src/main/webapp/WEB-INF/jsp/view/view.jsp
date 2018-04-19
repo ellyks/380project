@@ -30,6 +30,7 @@
                     <c:out value="${attachment.name}" /></a>
             </c:forEach><br /><br />
         </c:if>
+            <a href="<c:url value="/ticket/addComment/${ticket.id}/" />">Add Comment</a>
         <a href="<c:url value="/ticket" />">Return to list tickets</a>
     </body>
 </html>

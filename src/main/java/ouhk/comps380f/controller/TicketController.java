@@ -22,6 +22,7 @@ import ouhk.comps380f.model.Attachment;
 import ouhk.comps380f.model.Ticket;
 import ouhk.comps380f.model.TicketUser;
 import ouhk.comps380f.service.AttachmentService;
+import ouhk.comps380f.service.CommentService;
 import ouhk.comps380f.service.TicketService;
 import ouhk.comps380f.view.DownloadingView;
 
@@ -34,6 +35,9 @@ public class TicketController {
 
     @Autowired
     private TicketService ticketService;
+    
+    @Autowired
+    private CommentService commentService;
 
     @Autowired
     private AttachmentService attachmentService;
@@ -93,7 +97,7 @@ public class TicketController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String create(Form form, Principal principal) throws IOException {
         long ticketId = ticketService.createTicket(principal.getName(),
-                form.getSubject(),form.getPrice(),
+                form.getSubject(), form.getPrice(),
                 form.getBody(), form.getAttachments());
         return "redirect:/ticket/view/" + ticketId;
     }
@@ -179,7 +183,7 @@ public class TicketController {
             return new RedirectView("/ticket/list", true);
         }
 
-        ticketService.updateTicket(ticketId, form.getSubject(),form.getPrice(),
+        ticketService.updateTicket(ticketId, form.getSubject(), form.getPrice(),
                 form.getBody(), form.getAttachments());
         return new RedirectView("/ticket/view/" + ticketId, true);
     }
@@ -192,6 +196,43 @@ public class TicketController {
             @PathVariable("attachment") String name) throws AttachmentNotFound {
         ticketService.deleteAttachment(ticketId, name);
         return "redirect:/ticket/edit/" + ticketId;
+    }
+    //newwwwww
+    public static class Comment {
+
+        private String content;
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+    }
+    
+    @RequestMapping(value = "addComment/{ticketId}", method = RequestMethod.GET)
+    public ModelAndView addComment(@PathVariable("ticketId") long ticketId,
+            Principal principal, HttpServletRequest request) {
+        Ticket ticket = ticketService.getTicket(ticketId);
+        if (ticket == null) {
+            return new ModelAndView(new RedirectView("/ticket/list", true));
+        }
+        return new ModelAndView("comment", "commentForm", new Comment());
+    }
+
+    
+    @RequestMapping(value = "addComment/{ticketId}", method = RequestMethod.POST)
+    public View addComment(@PathVariable("ticketId") long ticketId, Comment form,
+            Principal principal)
+            throws IOException {
+        Ticket ticket = ticketService.getTicket(ticketId);
+        if (ticket == null) {
+            return new RedirectView("/ticket/list", true);
+        }
+        commentService.createComment(form.getContent(),ticketId);
+        return new RedirectView("/ticket/view/" + ticketId, true);
     }
 
 }
