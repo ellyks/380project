@@ -28,9 +28,11 @@
 
     <http auto-config="true">
         <intercept-url pattern="/ticket/delete/**" access="hasRole('ADMIN')" />
-        <intercept-url pattern="/ticket/**" access="hasAnyRole('USER','ADMIN')" />
+        <intercept-url pattern="/ticket/**" access="hasAnyRole('USER','ADMIN') or isAnonymous()"/>
+        <intercept-url pattern="/ticket/bid/**" access="isAuthenticated()" />
+        <intercept-url pattern="/ticket/addComment/**" access="isAuthenticated()" />
         <form-login login-page="/login" authentication-failure-url="/login?error" />
-        <logout logout-success-url="/login?logout"
+        <logout logout-success-url="/ticket/list?logout"
                 invalidate-session="true"
                 delete-cookies="JSESSIONID" />
         <remember-me key="custSupportSecret" token-validity-seconds="86400" />
