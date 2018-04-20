@@ -19,6 +19,7 @@ import ouhk.comps380f.dao.TicketUserRepository;
 import ouhk.comps380f.exception.AttachmentNotFound;
 import ouhk.comps380f.exception.TicketNotFound;
 import ouhk.comps380f.model.Attachment;
+import ouhk.comps380f.model.Comment;
 import ouhk.comps380f.model.Ticket;
 import ouhk.comps380f.model.TicketUser;
 import ouhk.comps380f.service.AttachmentService;
@@ -30,209 +31,221 @@ import ouhk.comps380f.view.DownloadingView;
 @RequestMapping("ticket")
 public class TicketController {
 
-    @Resource
-    TicketUserRepository ticketUserRepo;
+  @Resource
+  TicketUserRepository ticketUserRepo;
 
-    @Autowired
-    private TicketService ticketService;
-    
-    @Autowired
-    private CommentService commentService;
+  @Autowired
+  private TicketService ticketService;
 
-    @Autowired
-    private AttachmentService attachmentService;
+  @Autowired
+  private CommentService commentService;
 
-    @RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
-    public String list(ModelMap model) {
-        model.addAttribute("ticketDatabase", ticketService.getTickets());
-        return "list";
+  @Autowired
+  private AttachmentService attachmentService;
+
+  @RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
+  public String list(ModelMap model) {
+    model.addAttribute("ticketDatabase", ticketService.getTickets());
+    return "list";
+  }
+
+  @RequestMapping(value = "create", method = RequestMethod.GET)
+  public ModelAndView create() {
+    return new ModelAndView("add", "ticketForm", new Form());
+  }
+
+  public static class Form {
+
+    private long price;
+    private String subject;
+    private String body;
+    private List<MultipartFile> attachments;
+
+    public long getPrice() {
+      return price;
     }
 
-    @RequestMapping(value = "create", method = RequestMethod.GET)
-    public ModelAndView create() {
-        return new ModelAndView("add", "ticketForm", new Form());
+    public void setPrice(long price) {
+      this.price = price;
     }
 
-    public static class Form {
-
-        private long price;
-        private String subject;
-        private String body;
-        private List<MultipartFile> attachments;
-
-        public long getPrice() {
-            return price;
-        }
-
-        public void setPrice(long price) {
-            this.price = price;
-        }
-
-        public String getSubject() {
-            return subject;
-        }
-
-        public void setSubject(String subject) {
-            this.subject = subject;
-        }
-
-        public String getBody() {
-            return body;
-        }
-
-        public void setBody(String body) {
-            this.body = body;
-        }
-
-        public List<MultipartFile> getAttachments() {
-            return attachments;
-        }
-
-        public void setAttachments(List<MultipartFile> attachments) {
-            this.attachments = attachments;
-        }
-
+    public String getSubject() {
+      return subject;
     }
 
-    @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String create(Form form, Principal principal) throws IOException {
-        long ticketId = ticketService.createTicket(principal.getName(),
-                form.getSubject(), form.getPrice(),
-                form.getBody(), form.getAttachments());
-        return "redirect:/ticket/view/" + ticketId;
+    public void setSubject(String subject) {
+      this.subject = subject;
     }
 
-    @RequestMapping(value = "register", method = RequestMethod.GET)
-    public ModelAndView register() {
-        return new ModelAndView("register", "ticketUser", new TicketUserController.Form());
+    public String getBody() {
+      return body;
     }
 
-    @RequestMapping(value = "register", method = RequestMethod.POST)
-    public View register(TicketUserController.Form form) throws IOException {
-        TicketUser user = new TicketUser(form.getUsername(),
-                form.getPassword(),
-                form.getRoles()
-        );
-        ticketUserRepo.save(user);
-        return new RedirectView("/user/list", true);
+    public void setBody(String body) {
+      this.body = body;
     }
 
-    @RequestMapping(value = "view/{ticketId}", method = RequestMethod.GET)
-    public String view(@PathVariable("ticketId") long ticketId,
-            ModelMap model) {
-        Ticket ticket = ticketService.getTicket(ticketId);
-        if (ticket == null) {
-            return "redirect:/ticket/list";
-        }
-        model.addAttribute("ticket", ticket);
-        return "view";
+    public List<MultipartFile> getAttachments() {
+      return attachments;
     }
 
-    @RequestMapping(
-            value = "/{ticketId}/attachment/{attachment:.+}",
-            method = RequestMethod.GET
-    )
-    public View download(@PathVariable("ticketId") long ticketId,
-            @PathVariable("attachment") String name) {
-
-        Attachment attachment = attachmentService.getAttachment(ticketId, name);
-        if (attachment != null) {
-            return new DownloadingView(attachment.getName(),
-                    attachment.getMimeContentType(), attachment.getContents());
-        }
-        return new RedirectView("/ticket/list", true);
+    public void setAttachments(List<MultipartFile> attachments) {
+      this.attachments = attachments;
     }
 
-    @RequestMapping(value = "delete/{ticketId}", method = RequestMethod.GET)
-    public String deleteTicket(@PathVariable("ticketId") long ticketId)
-            throws TicketNotFound {
-        ticketService.delete(ticketId);
-        return "redirect:/ticket/list";
+  }
+
+  @RequestMapping(value = "create", method = RequestMethod.POST)
+  public String create(Form form, Principal principal) throws IOException {
+    long ticketId = ticketService.createTicket(principal.getName(),
+            form.getSubject(), form.getPrice(),
+            form.getBody(), form.getAttachments());
+    return "redirect:/ticket/view/" + ticketId;
+  }
+
+  @RequestMapping(value = "register", method = RequestMethod.GET)
+  public ModelAndView register() {
+    return new ModelAndView("register", "ticketUser", new TicketUserController.Form());
+  }
+
+  @RequestMapping(value = "register", method = RequestMethod.POST)
+  public View register(TicketUserController.Form form) throws IOException {
+    TicketUser user = new TicketUser(form.getUsername(),
+            form.getPassword(),
+            form.getRoles()
+    );
+    ticketUserRepo.save(user);
+    return new RedirectView("/user/list", true);
+  }
+
+  @RequestMapping(value = "view/{ticketId}", method = RequestMethod.GET)
+  public String view(@PathVariable("ticketId") long ticketId,
+          ModelMap model) {
+    Ticket ticket = ticketService.getTicket(ticketId);
+    List<Comment> comment = commentService.getComment(ticketId);
+    if (ticket == null) {
+      return "redirect:/ticket/list";
+    }
+    model.addAttribute("ticket", ticket);
+    model.addAttribute("comment", comment);
+    return "view";
+  }
+
+  @RequestMapping(
+          value = "/{ticketId}/attachment/{attachment:.+}",
+          method = RequestMethod.GET
+  )
+  public View download(@PathVariable("ticketId") long ticketId,
+          @PathVariable("attachment") String name) {
+
+    Attachment attachment = attachmentService.getAttachment(ticketId, name);
+    if (attachment != null) {
+      return new DownloadingView(attachment.getName(),
+              attachment.getMimeContentType(), attachment.getContents());
+    }
+    return new RedirectView("/ticket/list", true);
+  }
+
+  @RequestMapping(value = "delete/{ticketId}", method = RequestMethod.GET)
+  public String deleteTicket(@PathVariable("ticketId") long ticketId)
+          throws TicketNotFound {
+    ticketService.delete(ticketId);
+    return "redirect:/ticket/list";
+  }
+
+  @RequestMapping(value = "edit/{ticketId}", method = RequestMethod.GET)
+  public ModelAndView showEdit(@PathVariable("ticketId") long ticketId,
+          Principal principal, HttpServletRequest request) {
+    Ticket ticket = ticketService.getTicket(ticketId);
+    if (ticket == null
+            || (!request.isUserInRole("ROLE_ADMIN")
+            && !principal.getName().equals(ticket.getcustomerName()))) {
+      return new ModelAndView(new RedirectView("/ticket/list", true));
     }
 
-    @RequestMapping(value = "edit/{ticketId}", method = RequestMethod.GET)
-    public ModelAndView showEdit(@PathVariable("ticketId") long ticketId,
-            Principal principal, HttpServletRequest request) {
-        Ticket ticket = ticketService.getTicket(ticketId);
-        if (ticket == null
-                || (!request.isUserInRole("ROLE_ADMIN")
-                && !principal.getName().equals(ticket.getcustomerName()))) {
-            return new ModelAndView(new RedirectView("/ticket/list", true));
-        }
+    ModelAndView modelAndView = new ModelAndView("edit");
+    modelAndView.addObject("ticket", ticket);
 
-        ModelAndView modelAndView = new ModelAndView("edit");
-        modelAndView.addObject("ticket", ticket);
+    Form ticketForm = new Form();
+    ticketForm.setSubject(ticket.getSubject());
+    ticketForm.setBody(ticket.getBody());
+    ticketForm.setPrice(ticket.getPrice());
+    modelAndView.addObject("ticketForm", ticketForm);
 
-        Form ticketForm = new Form();
-        ticketForm.setSubject(ticket.getSubject());
-        ticketForm.setBody(ticket.getBody());
-        ticketForm.setPrice(ticket.getPrice());
-        modelAndView.addObject("ticketForm", ticketForm);
+    return modelAndView;
+  }
 
-        return modelAndView;
+  @RequestMapping(value = "edit/{ticketId}", method = RequestMethod.POST)
+  public View edit(@PathVariable("ticketId") long ticketId, Form form,
+          Principal principal, HttpServletRequest request)
+          throws IOException, TicketNotFound {
+    Ticket ticket = ticketService.getTicket(ticketId);
+    if (ticket == null
+            || (!request.isUserInRole("ROLE_ADMIN")
+            && !principal.getName().equals(ticket.getcustomerName()))) {
+      return new RedirectView("/ticket/list", true);
     }
 
-    @RequestMapping(value = "edit/{ticketId}", method = RequestMethod.POST)
-    public View edit(@PathVariable("ticketId") long ticketId, Form form,
-            Principal principal, HttpServletRequest request)
-            throws IOException, TicketNotFound {
-        Ticket ticket = ticketService.getTicket(ticketId);
-        if (ticket == null
-                || (!request.isUserInRole("ROLE_ADMIN")
-                && !principal.getName().equals(ticket.getcustomerName()))) {
-            return new RedirectView("/ticket/list", true);
-        }
+    ticketService.updateTicket(ticketId, form.getSubject(), form.getPrice(),
+            form.getBody(), form.getAttachments());
+    return new RedirectView("/ticket/view/" + ticketId, true);
+  }
 
-        ticketService.updateTicket(ticketId, form.getSubject(), form.getPrice(),
-                form.getBody(), form.getAttachments());
-        return new RedirectView("/ticket/view/" + ticketId, true);
+  @RequestMapping(
+          value = "/{ticketId}/delete/{attachment:.+}",
+          method = RequestMethod.GET
+  )
+  public String deleteAttachment(@PathVariable("ticketId") long ticketId,
+          @PathVariable("attachment") String name) throws AttachmentNotFound {
+    ticketService.deleteAttachment(ticketId, name);
+    return "redirect:/ticket/edit/" + ticketId;
+  }
+  
+  //newwwwww
+
+  public static class Content {
+
+    private String content;
+
+    public String getContent() {
+      return content;
     }
 
-    @RequestMapping(
-            value = "/{ticketId}/delete/{attachment:.+}",
-            method = RequestMethod.GET
-    )
-    public String deleteAttachment(@PathVariable("ticketId") long ticketId,
-            @PathVariable("attachment") String name) throws AttachmentNotFound {
-        ticketService.deleteAttachment(ticketId, name);
-        return "redirect:/ticket/edit/" + ticketId;
-    }
-    //newwwwww
-    public static class Comment {
-
-        private String content;
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-    }
-    
-    @RequestMapping(value = "addComment/{ticketId}", method = RequestMethod.GET)
-    public ModelAndView addComment(@PathVariable("ticketId") long ticketId,
-            Principal principal, HttpServletRequest request) {
-        Ticket ticket = ticketService.getTicket(ticketId);
-        if (ticket == null) {
-            return new ModelAndView(new RedirectView("/ticket/list", true));
-        }
-        return new ModelAndView("comment", "commentForm", new Comment());
+    public void setContent(String content) {
+      this.content = content;
     }
 
-    
-    @RequestMapping(value = "addComment/{ticketId}", method = RequestMethod.POST)
-    public View addComment(@PathVariable("ticketId") long ticketId, Comment form,
-            Principal principal)
-            throws IOException {
-        Ticket ticket = ticketService.getTicket(ticketId);
-        if (ticket == null) {
-            return new RedirectView("/ticket/list", true);
-        }
-        commentService.createComment(form.getContent(),ticketId);
-        return new RedirectView("/ticket/view/" + ticketId, true);
-    }
+  }
 
+  @RequestMapping(value = "addComment/{ticketId}", method = RequestMethod.GET)
+  public ModelAndView addComment(@PathVariable("ticketId") long ticketId,
+          Principal principal, HttpServletRequest request) {
+    Ticket ticket = ticketService.getTicket(ticketId);
+    if (ticket == null) {
+      return new ModelAndView(new RedirectView("/ticket/list", true));
+    }
+    return new ModelAndView("comment", "commentForm", new Content());
+  }
+
+  @RequestMapping(value = "addComment/{ticketId}", method = RequestMethod.POST)
+  public View addComment(@PathVariable("ticketId") long ticketId, Content form,
+          Principal principal)
+          throws IOException {
+    Ticket ticket = ticketService.getTicket(ticketId);
+
+    if (ticket == null) {
+      return new RedirectView("/ticket/list", true);
+    }
+    commentService.createComment(form.getContent(), ticketId);//ticketId
+    return new RedirectView("/ticket/view/" + ticketId, true);
+  }
+
+  
+  //Alannnnnnnnnbnbnn
+  /*@RequestMapping(value = "commentdelete/{commentId}", method = RequestMethod.GET)
+  public String deleteComment(@PathVariable("commentId") long commentId)
+          throws TicketNotFound {
+    commentService.delete(commentId);
+    return "redirect:/ticket/list";
+  }*/
 }

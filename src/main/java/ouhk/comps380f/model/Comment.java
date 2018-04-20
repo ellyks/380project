@@ -21,6 +21,7 @@ public class Comment implements Serializable {
 
     @Column(name = "content")
     private String content;
+    
 
     @Column(name = "ticket_id", insertable = false, updatable = false)
     private long ticketId;

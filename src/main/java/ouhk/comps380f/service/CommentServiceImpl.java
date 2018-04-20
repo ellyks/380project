@@ -12,23 +12,32 @@ import ouhk.comps380f.model.Ticket;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    @Resource
-    private CommentRepository commentRepo;
+  @Resource
+  private CommentRepository commentRepo;
 
-    @Override
-    @Transactional
-    public List<Comment> getComment() {
-        return commentRepo.findAll();
-    }
+  @Override
+  @Transactional
+  public List<Comment> getComment(long id) {
+    return commentRepo.findByTicketId(id);
+  }
 
-    @Override
-    @Transactional
-    public long createComment(String content, long ticketId) throws IOException {
-        Comment comment = new Comment();
-        comment.setContent(content);
-        comment.setTicketId(ticketId);
-        Comment savedComment = commentRepo.save(comment);
-        return savedComment.getId();
+  @Override
+  @Transactional
+  public long createComment(String content, long ticketId) throws IOException {
+    Comment comment = new Comment();
+    comment.setContent(content);
+    comment.setTicketId(ticketId);
+    Comment savedComment = commentRepo.save(comment);
+    return savedComment.getId();
+  }
+
+  /*@Override
+  @Transactional
+  public void delete(long id){
+    Comment deletedComment = commentRepo.findOne(id);
+    if (deletedComment == null) {
     }
+    commentRepo.delete(deletedComment);
+  }*/
 
 }

@@ -8,5 +8,7 @@ public interface CommentService {
 
     public long createComment(String content, long ticketId) throws IOException;
 
-    public List<Comment> getComment();
+    public List<Comment> getComment(long id);
+    
+    //public void delete(long id);
 }
