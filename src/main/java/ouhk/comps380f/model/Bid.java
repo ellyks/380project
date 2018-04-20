@@ -13,24 +13,23 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Comment implements Serializable {
+public class Bid implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "price")
+    private long price;
     
-
-    @Column(name = "ticketId", insertable = false, updatable = false)
-    private long ticketId;
-    
-        @Column(name = "buyername")
+   @Column(name = "buyername")
     private String buyername;
 
+    @Column(name = "ticket_id", insertable = false, updatable = false)
+    private long ticketId;
+
     @ManyToOne
-    @JoinColumn(name = "ticketId")
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
     public long getId() {
@@ -41,12 +40,20 @@ public class Comment implements Serializable {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public long getPrice() {
+        return price;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
+    public String getBuyername() {
+        return buyername;
+    }
+
+    public void setBuyername(String buyername) {
+        this.buyername = buyername;
     }
 
     public long getTicketId() {
@@ -65,13 +72,7 @@ public class Comment implements Serializable {
         this.ticket = ticket;
     }
 
-  public String getBuyername() {
-    return buyername;
-  }
-
-  public void setBuyername(String buyername) {
-    this.buyername = buyername;
-  }
+    
     
     
 }

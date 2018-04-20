@@ -7,7 +7,7 @@
         
 
         <h2>Bidding Price</h2>
-        <form:form method="POST" enctype="multipart/form-data" modelAttribute="ticketForm">
+        <form:form method="POST" enctype="multipart/form-data" modelAttribute="bidForm">
 
          
             <form:label path="price">Price</form:label><br/>

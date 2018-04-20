@@ -19,10 +19,12 @@ import ouhk.comps380f.dao.TicketUserRepository;
 import ouhk.comps380f.exception.AttachmentNotFound;
 import ouhk.comps380f.exception.TicketNotFound;
 import ouhk.comps380f.model.Attachment;
+import ouhk.comps380f.model.Bid;
 import ouhk.comps380f.model.Comment;
 import ouhk.comps380f.model.Ticket;
 import ouhk.comps380f.model.TicketUser;
 import ouhk.comps380f.service.AttachmentService;
+import ouhk.comps380f.service.BidService;
 import ouhk.comps380f.service.CommentService;
 import ouhk.comps380f.service.TicketService;
 import ouhk.comps380f.view.DownloadingView;
@@ -42,6 +44,9 @@ public class TicketController {
 
   @Autowired
   private AttachmentService attachmentService;
+
+  @Autowired
+  private BidService bidService;
 
   @RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
   public String list(ModelMap model) {
@@ -123,11 +128,13 @@ public class TicketController {
           ModelMap model) {
     Ticket ticket = ticketService.getTicket(ticketId);
     List<Comment> comment = commentService.getComment(ticketId);
+    List<Bid> bid = bidService.getBid(ticketId);
     if (ticket == null) {
       return "redirect:/ticket/list";
     }
     model.addAttribute("ticket", ticket);
     model.addAttribute("comment", comment);
+    model.addAttribute("bid", bid);
     return "view";
   }
 
@@ -200,9 +207,8 @@ public class TicketController {
     ticketService.deleteAttachment(ticketId, name);
     return "redirect:/ticket/edit/" + ticketId;
   }
-  
-  //newwwwww
 
+  //newwwwww
   public static class Content {
 
     private String content;
@@ -215,6 +221,19 @@ public class TicketController {
       this.content = content;
     }
 
+  }
+
+  public static class Bidding {
+
+    private Long price;
+
+    public Long getPrice() {
+      return price;
+    }
+
+    public void setPrice(Long price) {
+      this.price = price;
+    }
   }
 
   @RequestMapping(value = "addComment/{ticketId}", method = RequestMethod.GET)
@@ -236,11 +255,32 @@ public class TicketController {
     if (ticket == null) {
       return new RedirectView("/ticket/list", true);
     }
-    commentService.createComment(form.getContent(), ticketId);//ticketId
+    commentService.createComment(form.getContent(), 1, principal.getName());//ticketId
     return new RedirectView("/ticket/view/" + ticketId, true);
   }
 
-  
+  @RequestMapping(value = "bid/{ticketId}", method = RequestMethod.GET)
+  public ModelAndView bid(@PathVariable("ticketId") long ticketId,
+          Principal principal, HttpServletRequest request) {
+    Ticket ticket = ticketService.getTicket(ticketId);
+    if (ticket == null) {
+      return new ModelAndView(new RedirectView("/ticket/list", true));
+    }
+    return new ModelAndView("bidprice", "bidForm", new Bidding());
+  }
+
+  @RequestMapping(value = "bid/{ticketId}", method = RequestMethod.POST)
+  public View bid(@PathVariable("ticketId") long ticketId, Bidding form,
+          Principal principal)
+          throws IOException {
+    Ticket ticket = ticketService.getTicket(ticketId);
+    if (ticket == null) {
+      return new RedirectView("/ticket/list", true);
+    }
+    bidService.createBid(form.getPrice(), ticketId, principal.getName());
+    return new RedirectView("/ticket/view/" + ticketId, true);
+  }
+
   //Alannnnnnnnnbnbnn
   /*@RequestMapping(value = "commentdelete/{commentId}", method = RequestMethod.GET)
   public String deleteComment(@PathVariable("commentId") long commentId)

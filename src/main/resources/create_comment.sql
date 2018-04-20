@@ -1,8 +1,8 @@
 CREATE TABLE comment (
     id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     content VARCHAR(255) DEFAULT NULL,
-    ticket_id INTEGER DEFAULT NULL,
-
+    ticketId INTEGER DEFAULT NULL,
+    buyername VARCHAR(20) DEFAULT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (ticket_id) REFERENCES ticket(id) 
+    FOREIGN KEY (ticketId) REFERENCES ticket(id) 
 );

@@ -23,10 +23,12 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   @Transactional
-  public long createComment(String content, long ticketId) throws IOException {
+  public long createComment(String content, long ticketId,String buyername) throws IOException {
     Comment comment = new Comment();
     comment.setContent(content);
     comment.setTicketId(ticketId);
+    comment.setBuyername(buyername);
+    
     Comment savedComment = commentRepo.save(comment);
     return savedComment.getId();
   }

@@ -31,14 +31,27 @@
       </c:forEach><br /><br />
     </c:if>
     <a href="<c:url value="/ticket/addComment/${ticket.id}/" />">Add Comment</a><br /><br />
+    <a href="<c:url value="/ticket/bid/${ticket.id}/" />">Bidding</a><br /><br />
+
+    Bidding
+    <br />
+    <br />
+    Current Number of Bids: ${fn:length(bid)}<br />
+    <c:forEach items="${bid}" var="bid">
+      Price: <c:out value="${bid.price}" />
+      User Name: <c:out value="${bid.buyername}" /><br />
+    </c:forEach><br /><br />
+
+
+
     Comment List:<br/>
     <ul>
       <c:forEach items="${comment}" var="comment">
-        <li><c:out value="${comment.content}" /> by:
+        <li><c:out value="${comment.content}" /> (by:<c:out value="${comment.buyername}" />)
           <security:authorize access="hasRole('ADMIN')">            
-          [<a href="<c:url value="/ticket/commentdelete/${comment.id}" />">Delete</a>]</li>
-        </security:authorize>
-      </c:forEach><br />
+            [<a href="<c:url value="/ticket/commentdelete/${comment.id}" />">Delete</a>]</li>
+          </security:authorize>
+        </c:forEach><br />
     </ul>
     <a href="<c:url value="/ticket" />">Return to list tickets</a>
   </body>

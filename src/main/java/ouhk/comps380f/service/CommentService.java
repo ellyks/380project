@@ -6,7 +6,7 @@ import ouhk.comps380f.model.Comment;
 
 public interface CommentService {
 
-    public long createComment(String content, long ticketId) throws IOException;
+    public long createComment(String content, long ticketId,String buyername) throws IOException;
 
     public List<Comment> getComment(long id);
     
