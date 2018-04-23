@@ -20,7 +20,9 @@
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
             <c:url var="registerUrl" value="/ticket/register"/>
-            <a href="/380project/ticket/register">register</a>
+            <br/>
+            <br/>
+            <a href="/380project/ticket/register">Register</a>
         </security:authorize>
 
         <h2>Bidding</h2>
@@ -35,7 +37,7 @@
             </c:when>
             <c:otherwise>
                 <c:forEach items="${ticketDatabase}" var="ticket">
-                    Item ${ticket.id}:
+                    Item:
                     <a href="<c:url value="/ticket/view/${ticket.id}" />">
                         <c:out value="${ticket.subject}" /></a>
                     (customer: <c:out value="${ticket.customerName}" />)
