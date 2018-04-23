@@ -55,13 +55,44 @@
     <br />
     <br />
     Current Number of Bids: ${fn:length(bid)}<br />
-    <c:forEach items="${bid}" var="bid">
-        Price: <c:out value="${bid.price}" />
-        User Name: <c:out value="${bid.buyername}" /><br />
-    </c:forEach><br /><br />
+        Current Status of Bid: 
+        <c:choose>
+            <c:when test="${ticket.status}">
+                Open<br>
+                <security:authorize access="hasRole('ADMIN') or 
+                            isAuthenticated() and principal.username=='${ticket.customerName}'">
+                    <a href="<c:url value="/ticket/endbid/${ticket.id}/" />">End the Bidding</a><br />
+                </security:authorize>  
+
+            </c:when>
+            <c:otherwise>
+                Close
+                <br>
+                <c:choose>
+                    <c:when test="${not empty ticket.winnername}">
+                        Bid ended. The winner is  <c:out value="${ticket.winnername}" />
+                        <br>
+                    </c:when>
+                    <c:otherwise>
+                        Bid ended with no winner. 
+                        <br>
+                    </c:otherwise>
+                </c:choose>
+            </c:otherwise>
+        </c:choose>
+        <c:forEach items="${bid}" var="bid">
+
+            Price: $<c:out value="${bid.price}" />
+            User Name: <c:out value="${bid.buyername}" /><br>
+
+        </c:forEach><br /><br />
 
     <security:authorize access="isAuthenticated()">
         <a href="<c:url value="/ticket/addComment/${ticket.id}/" />">Add Comment</a><br /><br />
+        <c:if test="${ticket.status}">
+            <a href="<c:url value="/ticket/bid/${ticket.id}/" />">Bid Now</a><br /><br />
+        </c:if>
+
     </security:authorize>    
 
     Comment List:<br/>
@@ -73,6 +104,6 @@
                 </security:authorize>
             </c:forEach><br />
     </ul>
-    <a href="<c:url value="/ticket" />">Return to list tickets</a>
+    <a href="<c:url value="/ticket" />">Return to list item(s)</a>
 </body>
 </html>

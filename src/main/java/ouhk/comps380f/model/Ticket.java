@@ -27,6 +27,26 @@ public class Ticket implements Serializable {
     private String body;
     
     private long price;
+    
+    private boolean status;
+    
+    private String winnername;
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public String getWinnername() {
+        return winnername;
+    }
+
+    public void setWinnername(String winnername) {
+        this.winnername = winnername;
+    }
 
     @OneToMany(mappedBy = "ticket", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)

@@ -9,14 +9,14 @@ import ouhk.comps380f.model.Ticket;
 
 public interface TicketService {
 
-    public long createTicket(String customerName, String subject,long price,
+    public long createTicket(String customerName, String subject, long price,
             String body, List<MultipartFile> attachments) throws IOException;
 
     public List<Ticket> getTickets();
 
     public Ticket getTicket(long id);
 
-    public void updateTicket(long id, String subject,long price,
+    public void updateTicket(long id, String subject, long price,
             String body, List<MultipartFile> attachments)
             throws IOException, TicketNotFound;
 
@@ -24,4 +24,6 @@ public interface TicketService {
 
     public void deleteAttachment(long ticketId, String name)
             throws AttachmentNotFound;
+
+    public void updateStatus(long ticketId) throws TicketNotFound;
 }

@@ -29,8 +29,9 @@
         <security:authorize access="hasRole('ADMIN')">    
             <a href="<c:url value="/user" />">Manage User Accounts</a><br /><br />
         </security:authorize>
-        <a href="<c:url value="/ticket/create" />">Create a Ticket</a><br /><br />
-
+       <security:authorize access="isAuthenticated()">
+        <a href="<c:url value="/ticket/create" />">Create a Bidding</a><br /><br />
+        </security:authorize>
         <c:choose>
             <c:when test="${fn:length(ticketDatabase) == 0}">
                 <i>There are no bids in the system.</i>
@@ -40,7 +41,7 @@
                     Item:
                     <a href="<c:url value="/ticket/view/${ticket.id}" />">
                         <c:out value="${ticket.subject}" /></a>
-                    (customer: <c:out value="${ticket.customerName}" />)
+                    (owner: <c:out value="${ticket.customerName}" />)
                     <security:authorize access="hasRole('ADMIN') or 
                                         isAuthenticated() and principal.username=='${ticket.customerName}'">
                         [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]

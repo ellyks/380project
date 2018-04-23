@@ -289,4 +289,29 @@ public class TicketController {
     commentService.deleteCom(commentId);
     return "redirect:/ticket/list";
   }
+  
+  @RequestMapping(value = "endbid/{ticketId}", method = RequestMethod.GET)
+  public ModelAndView endBid(@PathVariable("ticketId") long ticketId,
+          Principal principal, HttpServletRequest request) throws TicketNotFound {
+    Ticket ticket = ticketService.getTicket(ticketId);
+    if (ticket == null) {
+      return new ModelAndView(new RedirectView("/ticket/list", true));
+    }
+    ticketService.updateStatus(ticketId);
+    return new ModelAndView(new RedirectView("/ticket/list", true));
+ }
+  
+    @RequestMapping(value = "endbidw/{ticketId}", method = RequestMethod.GET)
+  public ModelAndView endBidw(@PathVariable("ticketId") long ticketId,
+          Principal principal, HttpServletRequest request) throws TicketNotFound {
+    Ticket ticket = ticketService.getTicket(ticketId);
+    if (ticket == null) {
+      return new ModelAndView(new RedirectView("/ticket/list", true));
+    }
+    ticketService.updateStatus(ticketId);
+
+    return new ModelAndView(new RedirectView("/ticket/list", true));
+ }
+  
+  
 }

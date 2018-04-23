@@ -4,6 +4,8 @@ CREATE TABLE ticket (
     subject VARCHAR(255) NOT NULL,
     price INTEGER NOT NULL,
     body VARCHAR(255) NOT NULL,
+    status boolean DEFAULT TRUE,
+    winnername VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (id)
 );
 

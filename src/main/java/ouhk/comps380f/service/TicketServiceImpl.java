@@ -67,6 +67,7 @@ public class TicketServiceImpl implements TicketService {
         ticket.setSubject(subject);
         ticket.setBody(body);
         ticket.setPrice(price);
+        ticket.setStatus(true);
 
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();
@@ -113,4 +114,14 @@ public class TicketServiceImpl implements TicketService {
         ticketRepo.save(updatedTicket);
     }
 
+@Override
+    @Transactional(rollbackFor = TicketNotFound.class)
+    public void updateStatus(long id) throws TicketNotFound{
+        Ticket updatedTicket = ticketRepo.findOne(id);
+        if (updatedTicket == null) {
+            throw new TicketNotFound();
+        }
+        updatedTicket.setStatus(false);
+        ticketRepo.save(updatedTicket);
+    }
 }
