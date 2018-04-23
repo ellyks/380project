@@ -27,7 +27,10 @@
     </b:bean>
 
     <http auto-config="true">
-        <intercept-url pattern="/ticket/delete/**" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/user/**" access="hasRole('ADMIN')" /> 
+        <intercept-url pattern="/ticket/delete/**" access="hasRole('ADMIN')" />        
+        <intercept-url pattern="/ticket/edit/**" access="hasAnyRole('USER','ADMIN')"/>
+        <intercept-url pattern="/ticket/create" access="hasAnyRole('USER','ADMIN')"/>
         <intercept-url pattern="/ticket/**" access="hasAnyRole('USER','ADMIN') or isAnonymous()"/>
         <intercept-url pattern="/ticket/bid/**" access="isAuthenticated()" />
         <intercept-url pattern="/ticket/addComment/**" access="isAuthenticated()" />

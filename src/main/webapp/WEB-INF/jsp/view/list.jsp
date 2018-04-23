@@ -35,7 +35,7 @@
             </c:when>
             <c:otherwise>
                 <c:forEach items="${ticketDatabase}" var="ticket">
-                    Ticket ${ticket.id}:
+                    Item ${ticket.id}:
                     <a href="<c:url value="/ticket/view/${ticket.id}" />">
                         <c:out value="${ticket.subject}" /></a>
                     (customer: <c:out value="${ticket.customerName}" />)

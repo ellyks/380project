@@ -25,13 +25,10 @@ public class Bid implements Serializable {
    @Column(name = "buyername")
     private String buyername;
 
-    @Column(name = "ticket_id", insertable = false, updatable = false)
+    @Column(name = "ticket_id")
     private long ticketId;
 
-    @ManyToOne
-    @JoinColumn(name = "ticket_id")
-    private Ticket ticket;
-
+    
     public long getId() {
         return id;
     }
@@ -64,15 +61,6 @@ public class Bid implements Serializable {
         this.ticketId = ticketId;
     }
 
-    public Ticket getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    
-    
+  
     
 }

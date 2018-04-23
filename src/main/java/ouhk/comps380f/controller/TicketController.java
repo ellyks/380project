@@ -120,7 +120,7 @@ public class TicketController {
             form.getRoles()
     );
     ticketUserRepo.save(user);
-    return new RedirectView("/user/list", true);
+    return new RedirectView("/ticket/list", true);
   }
 
   @RequestMapping(value = "view/{ticketId}", method = RequestMethod.GET)
@@ -255,7 +255,7 @@ public class TicketController {
     if (ticket == null) {
       return new RedirectView("/ticket/list", true);
     }
-    commentService.createComment(form.getContent(), 1, principal.getName());//ticketId
+    commentService.createComment(form.getContent(), ticketId, principal.getName());//ticketId
     return new RedirectView("/ticket/view/" + ticketId, true);
   }
 
@@ -263,7 +263,9 @@ public class TicketController {
   public ModelAndView bid(@PathVariable("ticketId") long ticketId,
           Principal principal, HttpServletRequest request) {
     Ticket ticket = ticketService.getTicket(ticketId);
-    if (ticket == null) {
+    if (ticket == null
+            || (!request.isUserInRole("ROLE_ADMIN")
+            && principal.getName().equals(ticket.getcustomerName()))) {
       return new ModelAndView(new RedirectView("/ticket/list", true));
     }
     return new ModelAndView("bidprice", "bidForm", new Bidding());
@@ -281,11 +283,10 @@ public class TicketController {
     return new RedirectView("/ticket/view/" + ticketId, true);
   }
 
-  //Alannnnnnnnnbnbnn
-  /*@RequestMapping(value = "commentdelete/{commentId}", method = RequestMethod.GET)
-  public String deleteComment(@PathVariable("commentId") long commentId)
-          throws TicketNotFound {
-    commentService.delete(commentId);
+
+  @RequestMapping(value = "commentdelete/{commentId}", method = RequestMethod.GET)
+  public String commentdelete(@PathVariable("commentId") long commentId){
+    commentService.deleteCom(commentId);
     return "redirect:/ticket/list";
-  }*/
+  }
 }

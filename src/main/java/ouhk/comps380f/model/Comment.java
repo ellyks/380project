@@ -21,17 +21,12 @@ public class Comment implements Serializable {
 
     @Column(name = "content")
     private String content;
-    
 
-    @Column(name = "ticketId", insertable = false, updatable = false)
+    @Column(name = "ticketId")
     private long ticketId;
-    
-        @Column(name = "buyername")
-    private String buyername;
 
-    @ManyToOne
-    @JoinColumn(name = "ticketId")
-    private Ticket ticket;
+    @Column(name = "buyername")
+    private String buyername;
 
     public long getId() {
         return id;
@@ -57,21 +52,12 @@ public class Comment implements Serializable {
         this.ticketId = ticketId;
     }
 
-    public Ticket getTicket() {
-        return ticket;
+    public String getBuyername() {
+        return buyername;
     }
 
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+    public void setBuyername(String buyername) {
+        this.buyername = buyername;
     }
 
-  public String getBuyername() {
-    return buyername;
-  }
-
-  public void setBuyername(String buyername) {
-    this.buyername = buyername;
-  }
-    
-    
 }

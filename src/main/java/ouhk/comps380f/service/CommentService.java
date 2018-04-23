@@ -10,5 +10,5 @@ public interface CommentService {
 
     public List<Comment> getComment(long id);
     
-    //public void delete(long id);
+    public void deleteCom(long id);
 }

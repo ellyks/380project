@@ -33,13 +33,11 @@ public class CommentServiceImpl implements CommentService {
     return savedComment.getId();
   }
 
-  /*@Override
+  @Override
   @Transactional
-  public void delete(long id){
+  public void deleteCom(long id){
     Comment deletedComment = commentRepo.findOne(id);
-    if (deletedComment == null) {
-    }
     commentRepo.delete(deletedComment);
-  }*/
+  }
 
 }

@@ -3,6 +3,5 @@ CREATE TABLE comment (
     content VARCHAR(255) DEFAULT NULL,
     ticketId INTEGER DEFAULT NULL,
     buyername VARCHAR(20) DEFAULT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (ticketId) REFERENCES ticket(id) 
+    PRIMARY KEY (id)
 );

@@ -3,6 +3,5 @@ CREATE TABLE bid (
     price INTEGER NOT NULL,
     buyername VARCHAR(255) NOT NULL,
     ticket_id INTEGER DEFAULT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (ticket_id) REFERENCES ticket(id) 
+    PRIMARY KEY (id)
 );
