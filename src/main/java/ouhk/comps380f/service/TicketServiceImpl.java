@@ -140,11 +140,15 @@ public class TicketServiceImpl implements TicketService {
         if (updatedTicket == null || updateBid ==null) {
             throw new TicketNotFound();
         }
-        
-        ////DONT KNOW HOW TO FIND buyername in table BID with 
-        ////highest price in a ticket
-        
-        //updatedTicket.setWinnername(winnername);
+        int high =0;
+        int temp =0;
+        for(int i =0; i < updateBid.size();i++){
+            if(updateBid.get(i).price>high){
+                high = (int) updateBid.get(i).price;
+                temp = i;
+            }
+        }
+        updatedTicket.setWinnername(updateBid.get(temp).getBuyername());
         updatedTicket.setStatus(false);
         ticketRepo.save(updatedTicket);
     }

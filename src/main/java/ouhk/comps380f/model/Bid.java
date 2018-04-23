@@ -20,7 +20,7 @@ public class Bid implements Serializable {
     private long id;
 
     @Column(name = "price")
-    private long price;
+    public long price;
     
     @Column(name = "buyername")
     private String buyername;
