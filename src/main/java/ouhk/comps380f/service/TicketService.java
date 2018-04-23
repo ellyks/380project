@@ -26,4 +26,6 @@ public interface TicketService {
             throws AttachmentNotFound;
 
     public void updateStatus(long ticketId) throws TicketNotFound;
+    public void updateWinner(long ticketId) throws TicketNotFound;
+    
 }

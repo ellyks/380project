@@ -47,13 +47,9 @@
     </c:if>
 
     <security:authorize access="isAuthenticated()&&principal.username!='${ticket.customerName}'">
-        <a href="<c:url value="/ticket/bid/${ticket.id}/" />">Bid this item</a><br /><br />
+        <a href="<c:url value="/ticket/bid/${ticket.id}/" />">Bid this item</a><br />
     </security:authorize>    
-
-
-    Bidding List:
-    <br />
-    <br />
+    
     Current Number of Bids: ${fn:length(bid)}<br />
         Current Status of Bid: 
         <c:choose>
@@ -61,7 +57,9 @@
                 Open<br>
                 <security:authorize access="hasRole('ADMIN') or 
                             isAuthenticated() and principal.username=='${ticket.customerName}'">
-                    <a href="<c:url value="/ticket/endbid/${ticket.id}/" />">End the Bidding</a><br />
+                    <a href="<c:url value="/ticket/endbid/${ticket.id}/" />">End the Bidding with no winner</a>
+                    /<br>
+                    <a href="<c:url value="/ticket/endbidw/${ticket.id}/" />">End the Bidding</a><br>
                 </security:authorize>  
 
             </c:when>
@@ -80,19 +78,17 @@
                 </c:choose>
             </c:otherwise>
         </c:choose>
+      
+    Bidding List:<br />
+    <ul>
         <c:forEach items="${bid}" var="bid">
-
-            Price: $<c:out value="${bid.price}" />
-            User Name: <c:out value="${bid.buyername}" /><br>
-
-        </c:forEach><br /><br />
-
+            <li>Price: $<c:out value="${bid.price}" />, User Name: <c:out value="${bid.buyername}" /></li>
+        </c:forEach>
+    </ul>
+    <br>
+    
     <security:authorize access="isAuthenticated()">
-        <a href="<c:url value="/ticket/addComment/${ticket.id}/" />">Add Comment</a><br /><br />
-        <c:if test="${ticket.status}">
-            <a href="<c:url value="/ticket/bid/${ticket.id}/" />">Bid Now</a><br /><br />
-        </c:if>
-
+        <a href="<c:url value="/ticket/addComment/${ticket.id}/" />">Add Comment</a><br />
     </security:authorize>    
 
     Comment List:<br/>
@@ -102,7 +98,7 @@
                 <security:authorize access="hasRole('ADMIN')">            
                     [<a href="<c:url value="/ticket/commentdelete/${comment.id}" />">Delete</a>]</li>
                 </security:authorize>
-            </c:forEach><br />
+            </c:forEach>
     </ul>
     <a href="<c:url value="/ticket" />">Return to list item(s)</a>
 </body>

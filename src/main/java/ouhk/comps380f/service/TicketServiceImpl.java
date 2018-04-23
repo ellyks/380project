@@ -1,16 +1,19 @@
 package ouhk.comps380f.service;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ouhk.comps380f.dao.AttachmentRepository;
+import ouhk.comps380f.dao.BidRepository;
 import ouhk.comps380f.dao.TicketRepository;
 import ouhk.comps380f.exception.AttachmentNotFound;
 import ouhk.comps380f.exception.TicketNotFound;
 import ouhk.comps380f.model.Attachment;
+import ouhk.comps380f.model.Bid;
 import ouhk.comps380f.model.Ticket;
 
 @Service
@@ -21,7 +24,10 @@ public class TicketServiceImpl implements TicketService {
 
     @Resource
     private AttachmentRepository attachmentRepo;
-
+    
+    @Resource
+    private BidRepository bidRepo;
+    
     @Override
     @Transactional
     public List<Ticket> getTickets() {
@@ -60,7 +66,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public long createTicket(String customerName, String subject,long price,
+    public long createTicket(String customerName, String subject, long price,
             String body, List<MultipartFile> attachments) throws IOException {
         Ticket ticket = new Ticket();
         ticket.setcustomerName(customerName);
@@ -87,7 +93,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional(rollbackFor = TicketNotFound.class)
-    public void updateTicket(long id, String subject,long price,
+    public void updateTicket(long id, String subject, long price,
             String body, List<MultipartFile> attachments)
             throws IOException, TicketNotFound {
         Ticket updatedTicket = ticketRepo.findOne(id);
@@ -114,13 +120,31 @@ public class TicketServiceImpl implements TicketService {
         ticketRepo.save(updatedTicket);
     }
 
-@Override
+    @Override
     @Transactional(rollbackFor = TicketNotFound.class)
-    public void updateStatus(long id) throws TicketNotFound{
+    public void updateStatus(long id) throws TicketNotFound {
         Ticket updatedTicket = ticketRepo.findOne(id);
         if (updatedTicket == null) {
             throw new TicketNotFound();
         }
+        updatedTicket.setStatus(false);
+        ticketRepo.save(updatedTicket);
+    }
+
+    @Override
+    @Transactional(rollbackFor = TicketNotFound.class)
+    public void updateWinner(long id) throws TicketNotFound {
+        Ticket updatedTicket = ticketRepo.findOne(id);
+        List<Bid> updateBid = bidRepo.findByTicketId(id);
+        
+        if (updatedTicket == null || updateBid ==null) {
+            throw new TicketNotFound();
+        }
+        
+        ////DONT KNOW HOW TO FIND buyername in table BID with 
+        ////highest price in a ticket
+        
+        //updatedTicket.setWinnername(winnername);
         updatedTicket.setStatus(false);
         ticketRepo.save(updatedTicket);
     }
